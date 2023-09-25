@@ -1,6 +1,25 @@
-﻿namespace Job_Application_Recorder.ViewModels;
+﻿using ReactiveUI;
+
+namespace Job_Application_Recorder.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    public string Greeting => "Welcome to Avalonia! That, or you're lost. Oh well.";
+    private ViewModelBase _contentViewModel;
+    
+    public LandingPageViewModel LandingPage { get; }
+    public AddJobAppViewModel AddJobPage { get; }
+
+    public MainWindowViewModel()
+    {
+        LandingPage = new LandingPageViewModel();
+        AddJobPage = new AddJobAppViewModel();
+
+        _contentViewModel = LandingPage;
+    }
+
+    public ViewModelBase ContentViewModel
+    {
+        get => _contentViewModel;
+        private set => this.RaiseAndSetIfChanged(ref _contentViewModel, value);
+    }
 }
