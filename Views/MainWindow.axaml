@@ -15,37 +15,7 @@
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-    
-    <ScrollViewer>
-        <StackPanel>
-            <!-- Alt menu -->
-            <Grid ShowGridLines="True" IsVisible="False">
-                <DockPanel>
-                    <Menu DockPanel.Dock="Top">
-                        <MenuItem Header="_File">
-                            <MenuItem Header="_Open..."/>
-                            <Separator />
-                            <MenuItem Header="_Fuck off..."/>
-                        </MenuItem>
-                        <MenuItem Header="_Edit">
-                            <MenuItem Header="_Edit...something?"/>
-                        </MenuItem>
-                    </Menu>
-                </DockPanel>
-            </Grid>
-            <!-- Test Tab Panel -->
-            <Grid ColumnDefinitions="*" HorizontalAlignment="Center" IsVisible="True"> 
-                <TabControl Margin="5">
-                    <TabItem Header="View Applications">
-                        <views:ViewJobAppView />
-                    </TabItem>
-                    <TabItem Header="Add Application">
-                        <views:AddJobAppView />
-                    </TabItem>
-                </TabControl>
-            </Grid>
-            <views:LandingPageView />
-        </StackPanel>
-    </ScrollViewer>
+
+    <UserControl Content="{Binding ContentViewModel}" />
 
 </Window>
