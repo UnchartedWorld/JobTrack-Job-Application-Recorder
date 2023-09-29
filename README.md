@@ -16,7 +16,7 @@ In development.
 
 ## Authors and Acknowledgments
 
-TBD.
+ISO4217 currency codes were pulled from [Wealthly's sdata currency project](https://github.com/wealthly/sdata-currencies/tree/master), thus credit goes to them.
 
 ## License
 
