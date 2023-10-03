@@ -8,13 +8,15 @@
              x:DataType="vm:AddJobAppViewModel">
   <ScrollViewer>           
     <StackPanel Margin="20">
-      <TextBlock FontSize="16" FontWeight="Bold" Margin="0 10 0 5">Enter your job application’s details</TextBlock>
+      <TextBlock FontSize="16" FontWeight="Bold" Margin="0 10 0 5">
+                 Enter your job application’s details</TextBlock>
 
       <TextBlock Margin="0 10 0 5">Company Name:</TextBlock>
-      <TextBox Watermark="Enter the name of the company/organisation…"/>
+      <TextBox Watermark="Enter the name of the company/organisation…" 
+               Text="{Binding CompanyName, Mode=TwoWay}" />
 
       <TextBlock Margin="0 10 0 5">Job Title:</TextBlock>
-      <TextBox Watermark="Enter your job title…" />
+      <TextBox Watermark="Enter your job title…" Text="{Binding JobTitle, Mode=TwoWay}" />
 
       <TextBlock Margin="0 10 0 5">Pay/Salary</TextBlock>
         <StackPanel Orientation="Horizontal">
@@ -31,22 +33,22 @@
 
 
       <TextBlock Margin="0 10 0 5">Link to Job Posting:</TextBlock>
-      <TextBox Watermark="Enter the link to your job posting…" />
+      <TextBox Text="{Binding JobURL, Mode=TwoWay}" Watermark="Enter the link to your job posting…" />
 
       <TextBlock Margin="0 10 0 5">Job Location:</TextBlock>
-      <TextBox Watermark="Enter the location of the job…" />
+      <TextBox Text="{Binding JobLocation, Mode=TwoWay}" Watermark="Enter the location of the job…" />
 
       <TextBlock Margin="0 10 0 5">Job Flexibility:</TextBlock>
-        <RadioButton GroupName="JobFlexGroup" Content="In-person" />
-        <RadioButton GroupName="JobFlexGroup" Content="Hybrid" />
-        <RadioButton GroupName="JobFlexGroup" Content="Remote" />
+      <ComboBox Name="JobFlexibilityCombo" ItemsSource="{Binding JobFlexOptions}" 
+                SelectedItem="{Binding SelectedJobFlex}" />
 
       <TextBlock Margin="0 10 0 5">Date Applied:</TextBlock>
-      <DatePicker />
+      <DatePicker SelectedDate="{Binding DateOfApplication, Mode=TwoWay}" />
 
       <TextBlock Margin="0 10 0 5">General notes:</TextBlock>
       <TextBox AcceptsReturn="True" TextWrapping="Wrap" 
-               Watermark="Enter any notes that may be relevant to this job posting…" />
+               Watermark="Enter any notes that may be relevant to this job posting…"
+               Text="{Binding GeneralNotes, Mode=TwoWay}" />
     </StackPanel>
   </ScrollViewer>  
 </UserControl>
