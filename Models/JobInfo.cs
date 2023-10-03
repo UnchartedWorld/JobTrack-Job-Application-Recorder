@@ -8,7 +8,7 @@ public class JobInfo
     public string JobLink { get; set; }
     public string JobLocation { get; set; }
     public string JobFlexibility { get; set; }
-    public DateTime DateOfApplying { get; set; }
+    public DateTimeOffset DateOfApplying { get; set; }
     public JobOfferStatus OfferStatus { get; set; }
 
     public enum JobOfferStatus
