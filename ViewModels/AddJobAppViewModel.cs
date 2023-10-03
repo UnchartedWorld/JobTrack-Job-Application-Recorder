@@ -10,15 +10,49 @@ namespace Job_Application_Recorder.ViewModels;
 
 public class AddJobAppViewModel : ViewModelBase
 {
+    private string? companyName;
+    private string? jobTitle;
+    private string? jobURL;
     private string? minSalaryInput;
     private string? maxSalaryInput;
+    private string? jobLocation;
+    private DateTimeOffset? dateOfApplication;
+    private string? generalNotes;
+
     private string? selectedCurrencyChoice;
+    private string? selectedJobFlex;
     private List<string> currencies;
 
     public List<string> Currencies
     {
         get => currencies;
         set => this.RaiseAndSetIfChanged(ref currencies, value);
+    }
+
+    public List<string> JobFlexOptions { get; } = new List<string> { "In-Office", "Hybrid", "Remote" };
+
+    public string? CompanyName
+    {
+        get => companyName;
+        set => this.RaiseAndSetIfChanged(ref companyName, value);
+    }
+
+    public string? JobTitle
+    {
+        get => jobTitle;
+        set => this.RaiseAndSetIfChanged(ref jobTitle, value);
+    }
+
+    public string? JobURL
+    {
+        get => jobURL;
+        set => this.RaiseAndSetIfChanged(ref jobURL, value);
+    }
+
+    public string? JobLocation
+    {
+        get => jobLocation;
+        set => this.RaiseAndSetIfChanged(ref jobLocation, value);
     }
 
     public string? MinSalaryInput
@@ -37,6 +71,24 @@ public class AddJobAppViewModel : ViewModelBase
     {
         get => selectedCurrencyChoice;
         set => this.RaiseAndSetIfChanged(ref selectedCurrencyChoice, value);
+    }
+
+    public string? SelectedJobFlex
+    {
+        get => selectedJobFlex;
+        set => this.RaiseAndSetIfChanged(ref selectedJobFlex, value);
+    }
+
+    public DateTimeOffset? DateOfApplication
+    {
+        get => dateOfApplication;
+        set => this.RaiseAndSetIfChanged(ref dateOfApplication, value);
+    }
+
+    public string? GeneralNotes
+    {
+        get => generalNotes;
+        set => this.RaiseAndSetIfChanged(ref generalNotes, value);
     }
 
     public AddJobAppViewModel()
