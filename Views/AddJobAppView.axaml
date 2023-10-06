@@ -23,7 +23,7 @@
 
           <AutoCompleteBox ItemsSource="{Binding Currencies}" FilterMode="Contains" 
                            Watermark="Input name of currency…" Margin="0 0 5 0"
-                           SelectedItem="{Binding SelectedCurrencyChoice}" />
+                           SelectedItem="{Binding SelectedCurrencyChoice, Mode=TwoWay}" />
 
           <TextBox Text="{Binding MinSalaryInput, Mode=TwoWay}" />
           <TextBlock Margin="5 6 5 0">–</TextBlock>
@@ -40,7 +40,7 @@
 
       <TextBlock Margin="0 10 0 5">Job Flexibility:</TextBlock>
       <ComboBox Name="JobFlexibilityCombo" ItemsSource="{Binding JobFlexOptions}" 
-                SelectedItem="{Binding SelectedJobFlex}" />
+                SelectedItem="{Binding SelectedJobFlex, Mode=TwoWay}" />
 
       <TextBlock Margin="0 10 0 5">Date Applied:</TextBlock>
       <DatePicker SelectedDate="{Binding DateOfApplication, Mode=TwoWay}" />
@@ -49,6 +49,8 @@
       <TextBox AcceptsReturn="True" TextWrapping="Wrap" 
                Watermark="Enter any notes that may be relevant to this job posting…"
                Text="{Binding GeneralNotes, Mode=TwoWay}" />
+
+      <Button IsEnabled="{Binding ToggleSubmitBtn}" Content="Submit" />
     </StackPanel>
   </ScrollViewer>  
 </UserControl>
