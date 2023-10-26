@@ -3,7 +3,9 @@ using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Job_Application_Recorder.Services
@@ -86,13 +88,15 @@ namespace Job_Application_Recorder.Services
 	/// </summary>
 	public static class DialogHelper
 	{
+
 		/// <summary>
 		/// Shows an open file dialog for a registered context, most likely a ViewModel
 		/// </summary>
-		/// <param name="context">The context</param>
-		/// <param name="title">The dialog title or a default is null</param>
-		/// <param name="selectMany">Is selecting many files allowed?</param>
-		/// <returns>An array of file names</returns>
+		/// <param name="context">Context of the given dialog.</param>
+		/// <param name="title">The dialog title or a default is null.</param>
+		/// <param name="selectMany">If true, multiple files are selectable. 
+		/// Otherwise, is false and only one file is selectable.</param>
+		/// <returns>An array of file names.</returns>
 		/// <exception cref="ArgumentNullException">if context was null</exception>
 		public static async Task<IEnumerable<string>?> OpenFileDialogAsync
 		(this object? context, string? title = null, bool selectMany = false)
@@ -108,7 +112,9 @@ namespace Job_Application_Recorder.Services
 			if (topLevel != null)
 			{
 				// Open file dialog
-				var storageFile = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions()
+				IReadOnlyList<IStorageFile>? storageFile =
+				await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions()
+
 				{
 					Title = title ?? "Select JSON file",
 					AllowMultiple = selectMany,
@@ -127,6 +133,49 @@ namespace Job_Application_Recorder.Services
 				return storageFile.Select(s => s.Name);
 			}
 			return null;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="context">Context of the given dialog.</param>
+		/// <param name="title">The dialog title or a default is null.</param>
+		/// <param name="contents">Represents the contents of a saved file.</param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
+		public static async Task<IEnumerable<string>?> SaveFileDialogAsync
+		(this object? context, string? title = null, string? contents = null)
+		{
+			if (context == null)
+			{
+				throw new ArgumentNullException(nameof(context));
+			}
+
+			// lookup the TopLevel for the context
+			var topLevel = DialogService.GetTopLevelForContext(context);
+
+			if (topLevel != null)
+			{
+				IStorageFile? saveFile =
+				await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions()
+				{
+					Title = title ?? "Save File as JSON",
+					SuggestedFileName = "JobAppData",
+					ShowOverwritePrompt = true,
+					FileTypeChoices = new FilePickerFileType[]
+					{
+						new("JSON File")
+						{
+							Patterns = new[] {"*.json"},
+							AppleUniformTypeIdentifiers = new[] {"public.json"},
+							MimeTypes = new[] { "application/json" }
+						}
+					}
+				});
+
+			}
+			return null;
+
 		}
 
 	}
