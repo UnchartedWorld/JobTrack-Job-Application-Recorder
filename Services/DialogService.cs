@@ -3,9 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Job_Application_Recorder.Services
@@ -13,7 +11,7 @@ namespace Job_Application_Recorder.Services
 	public class DialogService : AvaloniaObject
 	{
 		private static readonly Dictionary<object, Visual> RegistrationMapper =
-			new Dictionary<object, Visual>();
+			new();
 
 		static DialogService()
 		{
@@ -136,15 +134,15 @@ namespace Job_Application_Recorder.Services
 		}
 
 		/// <summary>
-		/// 
+		/// Opens the Save FileDialog, passes options to the save function and
+		/// updates the last used file path.
 		/// </summary>
 		/// <param name="context">Context of the given dialog.</param>
 		/// <param name="title">The dialog title or a default is null.</param>
-		/// <param name="contents">Represents the contents of a saved file.</param>
 		/// <returns></returns>
 		/// <exception cref="ArgumentNullException"></exception>
-		public static async Task<IEnumerable<string>?> SaveFileDialogAsync
-		(this object? context, string? title = null, string? contents = null)
+		public static async Task<IEnumerable<string>?> CreateFileDialogAsync
+		(this object? context, string? title = null)
 		{
 			if (context == null)
 			{
@@ -156,12 +154,13 @@ namespace Job_Application_Recorder.Services
 
 			if (topLevel != null)
 			{
-				IStorageFile? saveFile =
+				IStorageFile? createFile =
 				await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions()
 				{
-					Title = title ?? "Save File as JSON",
+					Title = title ?? "Create File as JSON",
 					SuggestedFileName = "JobAppData",
 					ShowOverwritePrompt = true,
+					DefaultExtension = ".json",
 					FileTypeChoices = new FilePickerFileType[]
 					{
 						new("JSON File")
@@ -173,9 +172,80 @@ namespace Job_Application_Recorder.Services
 					}
 				});
 
+				if (createFile != null)
+				{
+					var emptyJobAppModel = new{ };
+
+					// Serialises the model to JSON, then saves it.
+					await FileService.CreateToJSONFileAsync(createFile, emptyJobAppModel);
+                    AppSettings appSettings = new()
+                    {
+                        LastFilePathUsed = createFile.Path.LocalPath
+                    };
+                    // Saves file path to appSettings.json.
+                    AppSettingsService.SaveAppSettings(appSettings);					
+				}
+
 			}
 			return null;
+		}
 
+		/// <summary>
+		/// Opens the Save FileDialog, passes options to the save function and
+		/// updates the last used file path.
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="jobApplicationContents"></param>
+		/// <param name="filePath"></param>
+		/// <param name="selectedID"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
+		public static async Task<IEnumerable<string>?> SaveOrEditFileDialogAsync
+		(this object? context,
+		 JobApplication? jobApplicationContents = null,
+		 string? filePath = null,
+		 Guid? selectedID = null)
+		{
+			AppSettings appSettings = new();
+			string desiredFilePath = filePath ?? appSettings.LastFilePathUsed;
+
+			if (context == null)
+			{
+				throw new ArgumentNullException(nameof(context));
+			}
+
+			if (string.IsNullOrEmpty(desiredFilePath))
+			{
+				throw new ArgumentNullException(nameof(filePath), "File path must have a value");
+			}
+
+			// lookup the TopLevel for the context
+			var topLevel = DialogService.GetTopLevelForContext(context);
+
+			if (topLevel != null)
+			{
+
+				// This will handle normal saving scenarios.
+
+				if (selectedID == null && jobApplicationContents != null)
+				{
+					IStorageFile? saveFile = await topLevel.StorageProvider.TryGetFileFromPathAsync(desiredFilePath);
+
+					if (saveFile != null)
+					{
+						await FileService.SaveToJSONFileAsync(saveFile, jobApplicationContents);
+					}
+				}
+				// Else it will assume editing scenarios.
+				else if (selectedID != null && jobApplicationContents != null)
+				{
+
+				}
+				 
+
+			}
+
+			return null;
 		}
 
 	}
