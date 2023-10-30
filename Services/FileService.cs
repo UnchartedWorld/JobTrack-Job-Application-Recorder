@@ -1,53 +1,36 @@
-using System;
+using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Avalonia.Controls;
 using Avalonia.Platform.Storage;
-using Job_Application_Recorder.Services;
 
-public class FileService : IFileService
+public static class FileService
 {
-    private readonly Window targetWindow;
-
-    public FileService(Window target)
+    /// <summary>
+    /// Stores a file in a desired location based on passed data.
+    /// </summary>
+    /// <param name="createFile">Represents the created file.</param>
+    /// <param name="data">Represents the data to be stored in the file.</param>
+    /// <returns></returns>
+    public static async Task CreateToJSONFileAsync(IStorageFile createFile, object data)
     {
-        targetWindow = target;
+        JsonSerializerOptions serializerOptions = new()
+        {
+            WriteIndented = true
+        };
+
+        string fileContents = JsonSerializer.Serialize(data, serializerOptions);
+
+        using Stream? writeStream = await createFile.OpenWriteAsync();
+        using StreamWriter streamWriter = new(writeStream);
+
+        await streamWriter.WriteAsync(fileContents);
     }
 
-    public async Task<IStorageFile?> OpenFileAsync()
+    public static async Task SaveToJSONFileAsync(IStorageFile saveFile, object data)
     {
-        var file = await targetWindow.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions()
+        JsonSerializerOptions serializerOptions = new()
         {
-            Title = "Open Job Applications JSON file",
-            AllowMultiple = false,
-            FileTypeFilter = new FilePickerFileType[]
-            {
-                new("CSV File")
-                {
-                    Patterns = new[] {"*.json"},
-                    AppleUniformTypeIdentifiers = new[] {"public.json"},
-                    MimeTypes = new[] { "application/json" }
-                }
-            }
-        });
-
-        Console.WriteLine("File name: " + file[0].Name);
-        return file[0];
-    }
-
-    public async Task<IStorageFile?> SaveFileAsync()
-    {
-        return await targetWindow.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions()
-        {
-            Title = "Save Job Application as JSON",
-            FileTypeChoices = new FilePickerFileType[]
-            {
-                new("CSV File")
-                {
-                    Patterns = new[] {"*.json"},
-                    AppleUniformTypeIdentifiers = new[] {"public.json"},
-                    MimeTypes = new[] { "application/json" }
-                }
-            }
-        });
+            WriteIndented = true
+        };
     }
 }
